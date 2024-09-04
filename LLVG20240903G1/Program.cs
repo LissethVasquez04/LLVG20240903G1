@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -38,7 +40,35 @@ app.MapPost("/marcas", (Marcas marca) =>
     return Results.Ok();//y dv una respuesta HTTP 200 ok
 });
 
+// Configurar una ruta PUT para actualizar una marca existente
+app.MapPut("/marcas/{id}", (int id, Marcas marca) =>
+{
+    var existingMarca = marcas.FirstOrDefault(m => m.Id == id);
+    if (existingMarca != null)
+    {
+        existingMarca.Name = marca.Name;
+        return Results.Ok();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+});
 
+// Configurar una ruta DELETE para eliminar una marca por su ID
+app.MapDelete("/marcas/{id}", (int id) =>
+{
+    var existingMarca = marcas.FirstOrDefault(m => m.Id == id);
+    if (existingMarca != null)
+    {
+        marcas.Remove(existingMarca);
+        return Results.Ok();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+});
 
 
 //ejecuta la aplicación 
